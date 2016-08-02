@@ -49,3 +49,8 @@ sites:
   domain: "blog.sky-city.me"
   https: true
   uri: "node/2000"
+
+- name: "Thomascook - Preprod"
+  domain: "www.preprod.thomascook.com.cn"
+  user: "altima"
+  password: "aba$ELeBYqUq"

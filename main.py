@@ -20,6 +20,8 @@ from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from datetime import datetime
+import base64
+import string
 
 
 # import pydevd
@@ -130,19 +132,27 @@ def read_config():
 
 # Function from http://stackoverflow.com/a/1140822/401554
 # Get HTTP status code of a domain + path
-def get_status_code(host, path="/", https = False):
+def get_status_code(site, path="/", https = False):
     """ This function retreives the status code of a website by requesting
         HEAD data from the host. This means that it only requests the headers.
         If the host cannot be reached or something else goes wrong, it returns
         None instead.
     """
+    host = site['domain']
+
     try:
         if (https):
             conn = httplib.HTTPSConnection(host)
             print "HTTPS: "+host
         else:
 	    conn = httplib.HTTPConnection(host)
-        conn.request("HEAD", path)
+        if ( 'user' in site and 'password' in site):
+            base64string = base64.encodestring('%s:%s' % (site['user'], site['password'])).replace('\n', '')
+            head = {'Authorization': 'Basic %s' % base64string}
+            conn.request("HEAD", path, headers=head)
+        else:
+            conn.request("HEAD", path)
+
         return conn.getresponse().status
     except StandardError:
         return None
@@ -172,7 +182,7 @@ def main():
             https = False
 
         # Get the HTTP code
-        code = get_status_code(site['domain'], uri, https)
+        code = get_status_code(site, uri, https)
         output("Checking "+site['name']+" ("+site['domain']+uri+") ... "+ str(code))
 
         # Call handler functions for status codes
