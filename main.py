@@ -10,7 +10,6 @@
 # Author Ando Roots 2012
 # Version 1.0
 # Licence: Apache Licence Version 2.0
-# http://sqroot.eu/2012/01/python-check-that-your-projects-are-still-alive/
 
 import httplib
 import yaml
