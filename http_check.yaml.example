@@ -1,0 +1,51 @@
+
+# See http://wp.me/p1OdID-kb for the blog post and .py
+# Config file for http checker
+
+# Version 1.0
+# Author Ando Roots
+
+# Mail settings for sending failure report
+mail:
+    # Whether the report should be sent in the first place
+    send_report: true
+    # The e-mail of the bot
+    sender: "18217401108@163.com"
+    pass: "xxxxxx"
+    # Recipients of the error report - in any valid format
+    recipients: "sxie@altima-agency.cn"
+    # The subject of the error report
+    subject: "HTTP check error report"
+
+# Log check results to a file
+file:
+    # Whether to log to a file
+    log: true   
+    # Status log file (contains boolean 1 or 0)
+    # indicating the overall result of the check (success/failure)
+    status_file: "./http_check.log"
+    # The file for console output log
+    output_file: "./http_check.txt"
+
+# Configure checked sites here
+# Possible options:
+# 
+# name - required - The name of the site
+# domain - required - The domain, WITHOUT protocol/www
+# uri - optional (default='/') - If the checked page is not the root. No leading slash.
+# https - optional (default=False) - Whether to use HTTPS 
+
+sites:
+- name: "GitHub"
+  domain: "github.com"
+  https: true
+
+- name: "sky-city"
+  domain: "blog.sky-city.me"
+  https: true
+  uri: "node/20"
+
+- name: "sky-city"
+  domain: "blog.sky-city.me"
+  https: true
+  uri: "node/2000"
