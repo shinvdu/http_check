@@ -4,19 +4,19 @@ Rename  http_check.yaml.example to  http_check.yaml
 
 make below config according to your own email, now it only surpport 163.mail.com
 
----
+<pre>
     sender: "18217401108@163.com"
     pass: "xxxxx"
     # Recipients of the error report - in any valid format
     recipients: "sxie@altima-agency.cn"
     # The subject of the error report
     subject: "HTTP check error report"
----
+</pre>
 
 
 Config monitoring files, like below.
 
----
+<pre>
 sites:
 - name: "GitHub"
   domain: "github.com"
@@ -32,7 +32,7 @@ sites:
   https: true
   uri: "node/2000"
 
----
+</pre>
 
 
 that is it.
