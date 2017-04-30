@@ -44,12 +44,12 @@ config_file = './http_check.yaml'
 
 # This gets called when everything is OK
 def http_ok(site):
-    output(site['name'] + " reported OK.")
+    output(u"site['name']" + " reported OK.")
     return # Custom actions here
 
 # This gets called when the status code is NOT 200
 def http_error(site, http_status):
-    output("<span style=\"color:#DD4B39;font-weight: bold;\">"+site['name'] + " FAILURE: HTTP status is "+ str(http_status)+".</span>")
+    output("<span style=\"color:#DD4B39;font-weight: bold;\">"+u"site['name']" + " FAILURE: HTTP status is "+ str(http_status)+".</span>")
 
     return # Any custom actions here
 
@@ -182,7 +182,7 @@ def main():
 
         # Get the HTTP code
         code = get_status_code(site, uri, https)
-        output("Checking "+site['name']+" ("+site['domain']+uri+") ... "+ str(code))
+        output("Checking "+ u"site['name']"+" ("+site['domain']+uri+") ... "+ str(code))
 
         # Call handler functions for status codes
         if (code == 200):
@@ -224,7 +224,7 @@ def main():
 def output(string):
     global output_buffer
     output_buffer += "<br />"+string
-    print string
+    print u"string"
 
 
 # Call the main function
