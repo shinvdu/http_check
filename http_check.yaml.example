@@ -14,6 +14,9 @@ mail:
     pass: "xxxxxx"
     # Recipients of the error report - in any valid format
     recipients: "sxie@altima-agency.cn"
+    # for multiple email
+    #recipients: "silas.xie@hwua.com,1521h401108@163.com"
+
     # The subject of the error report
     subject: "HTTP check error report"
 
