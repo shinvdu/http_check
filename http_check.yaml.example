@@ -10,15 +10,17 @@ mail:
     # Whether the report should be sent in the first place
     send_report: true
     # The e-mail of the bot
+    smtp_host: "smtp.163.com"
+    smtp_port: "25"
     sender: "18217401108@163.com"
-    pass: "xxxxxx"
+    pass: "xxxxxxxx"
     # Recipients of the error report - in any valid format
-    recipients: "sxie@altima-agency.cn"
+    recipients: "hang97@its.jnj.com,18217401108@163.com"
+    # recipients: "18217401108@163.com"
     # for multiple email
-    #recipients: "silas.xie@hwua.com,1521h401108@163.com"
 
     # The subject of the error report
-    subject: "HTTP check error report"
+    subject: "The subject of the error report"
 
 # Log check results to a file
 file:
@@ -39,21 +41,32 @@ file:
 # https - optional (default=False) - Whether to use HTTPS 
 
 sites:
-- name: "GitHub"
-  domain: "github.com"
+- name: "APP Backend"
+  domain: "domain.cn"
   https: true
+  uri: "/uri"
 
-- name: "sky-city"
-  domain: "blog.sky-city.me"
+- name: "APP Frontend"
+  domain: "domain.cn"
   https: true
-  uri: "node/20"
+  uri: "/uri"
 
-- name: "sky-city"
-  domain: "blog.sky-city.me"
-  https: true
-  uri: "node/2000"
+- name: "My API- Get Consumer info"
+  domain: "domain"
+  uri: "jnj.asmx?WSDL"
+  method: "POST"
+  payload: "./consumer.pd"
+  header: 
+  - Content-Type: 'application/soap+xml'
+    Accept-Encoding: 'utf-8'
+
+
+# - name: "sky-city"
+#   domain: "blog.sky-city.me"
+#   https: true
+#   uri: "node/2000"
 
 # - name: "Thomascook - Preprod"
 #   domain: "www.preprod.thomascook.com.cn"
 #   user: "altima"
-#   password: "aba$ELeBYqUq"
+#   password: "sdfsdll"

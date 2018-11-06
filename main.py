@@ -56,49 +56,36 @@ def http_ok(site):
 # This gets called when the status code is NOT 200
 def http_error(site, http_status):
     output("<span style=\"color:#DD4B39;font-weight: bold;\">" + site['name'] + " FAILURE: HTTP status is "+ str(http_status)+".</span>")
-
     return # Any custom actions here
 
 # -------------- END config - do not edit below unless you know what's going on
-def sendImage(user,pwd,to,subject,filename):
-    outer = MIMEMultipart()
-    outer['From'] = user
-    outer['To'] = to
-    outer['Subject'] = subject
-
-    fp = open(filename, 'rb')
-    msg = MIMEImage(fp.read())
-    msg.add_header('Content-Disposition', 'attachment', filename=filename)
-    fp.close()
-    outer.attach(msg)
-
-    try:
-        smtpServer = smtplib.SMTP('smtp.163.com',25) #邮件服务器，根据所用邮箱设定
-        print "Connecting To Mail Server."
-        smtpServer.ehlo()
-        print "logging Into Mail Server."
-        smtpServer.login(user,pwd)
-        print "sending mail"
-        smtpServer.sendmail(user,to,outer.as_string())
-        smtpServer.quit()
-        print "send success"
-    except Exception,e:
-        print str(e)
-        return False
 
 def sendText(user,pwd,to,subject,text):
+    global config
     # msg = MIMEText(text,_charset='utf-8')
-    msg = MIMEText(text, _subtype='html', _charset='utf-8') #添加编码，否则会出现乱码
+    ntext = '''
+Hi All
+
+<br>
+This is ping report. 
+<br>
+
+    ''' + text + '''
+<br>
+<br>
+By No One
+    ''';
+    msg = MIMEText(ntext, _subtype='html', _charset='utf-8') #添加编码，否则会出现乱码
     msg['From'] = user
     msg['To'] = to
     msg['Subject'] = subject
     try:
-        smtpServer = smtplib.SMTP('smtp.163.com',25) #邮件服务器，根据所用邮箱设定
+        smtpServer = smtplib.SMTP(config['mail']['smtp_host'], config['mail']['smtp_port']) #邮件服务器，根据所用邮箱设定
         print "Connecting To Mail Server."
-        smtpServer.ehlo()
+        # smtpServer.ehlo()
         print "starting encrypted session."
-        smtpServer.starttls()
-        smtpServer.ehlo()
+        # smtpServer.starttls()
+        # smtpServer.ehlo()
         print "logging Into Mail Server."
         smtpServer.login(user,pwd)
         print "sending mail"
@@ -123,6 +110,7 @@ def send_report():
         return
     try:
         sendText(From, Pass, To, Subject, output_buffer)
+        print 'Sended, to: ' + To;
     except smtplib.SMTPException:
         output('Could not send error report to configured recipients!')
 
@@ -134,6 +122,9 @@ def read_config():
     f.close()
     return config
 
+def file_get_contents(filename):
+    with open(filename) as f:
+        return f.read()
 
 # Function from http://stackoverflow.com/a/1140822/401554
 # Get HTTP status code of a domain + path
@@ -154,12 +145,22 @@ def get_status_code(site, path="/", https = False):
         if ( 'user' in site and 'password' in site):
             base64string = base64.encodestring('%s:%s' % (site['user'], site['password'])).replace('\n', '')
             head = {'Authorization': 'Basic %s' % base64string}
-            conn.request("HEAD", path, headers=head)
+            conn.request("GET", path, headers=head)
+            print '----------------------------'
         else:
-            conn.request("HEAD", path)
+            if (('method' in site) and site['method'] == 'POST'):
+                payload = file_get_contents(site['payload'])
+                # print payload
+                # print site['header']
+                conn.request("POST", path, payload, site['header'].pop())
+                # print('POST')
+            else:
+                # print('GET')
+                conn.request("GET", path)
 
         return conn.getresponse().status
-    except StandardError:
+    except StandardError as e:
+        # print str(e)
         return None
 
 
@@ -188,7 +189,7 @@ def main():
 
         # Get the HTTP code
         code = get_status_code(site, uri, https)
-        output("Checking "+ site['name']+" ("+site['domain']+uri+") ... "+ str(code))
+        output('<br>' + "Checking "+ site['name']+" ("+site['domain']+uri+") ... "+ str(code))
 
         # Call handler functions for status codes
         if (code == 200):
@@ -197,11 +198,11 @@ def main():
             all_valid = False
             http_error(site, code)
 
-    output(str(datetime.now())+': Checking completed.')
+    output('<br>' + str(datetime.now())+': Checking completed.')
 
     # Send report when failures need reporting
     if (not all_valid):
-        output('Some sites failed.')
+        output('<br>Some sites failed.')
         send_report()
     else:
         output('<span style="background-color: #79b530; font-weight: bold; font-size: 16px; color: #fff;">All sites reported status code 200.</span>')
